@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\bB.png" />
+    <None Remove="Images\bK.png" />
+    <None Remove="Images\bN.png" />
+    <None Remove="Images\bP.png" />
+    <None Remove="Images\bQ.png" />
+    <None Remove="Images\bR.png" />
+    <None Remove="Images\wB.png" />
+    <None Remove="Images\wK.png" />
+    <None Remove="Images\wN.png" />
+    <None Remove="Images\wP.png" />
+    <None Remove="Images\wQ.png" />
+    <None Remove="Images\wR.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\chess\chess\Chess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\bB.png" />
+    <Resource Include="Images\bK.png" />
+    <Resource Include="Images\bN.png" />
+    <Resource Include="Images\bP.png" />
+    <Resource Include="Images\bQ.png" />
+    <Resource Include="Images\bR.png" />
+    <Resource Include="Images\wB.png" />
+    <Resource Include="Images\wK.png" />
+    <Resource Include="Images\wN.png" />
+    <Resource Include="Images\wP.png" />
+    <Resource Include="Images\wQ.png" />
+    <Resource Include="Images\wR.png" />
+  </ItemGroup>
+
+</Project>
