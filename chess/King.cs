@@ -29,10 +29,10 @@ namespace chess
             if (y == 7 || y == 0)
             {
                 Figure fig;
-                if (x == 4) fig = board.GetFigure(y, 7);
+                if (x == 5) fig = board.GetFigure(y, 7);
                 else if (x == 1) fig = board.GetFigure(y, 0);
                 else return 0;
-                if (fig?.GetType() == typeof(Rook) && (fig as Rook).IsFirstStep && this.IsFirstStep)
+                if (fig?.GetType() == typeof(Rook) && fig?.GetColor() == this.color && (fig as Rook).IsFirstStep && this.IsFirstStep)
                 {
                     if (x == 1)
                     {

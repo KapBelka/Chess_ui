@@ -49,8 +49,6 @@ namespace Chess_ui
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(GameBoard.white_king);
-            Console.WriteLine(GameBoard.black_king);
             if (((Button)sender).Content != null && tempbtn == null)
             {
                 tempbtn = (Button)sender;

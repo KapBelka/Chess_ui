@@ -11,28 +11,7 @@ namespace Chess.Tests
         [Fact]
         public void ChessGameTest()
         {
-            Board GameBoard = new Board();
-            for (int b = 0; b < 8; b++)
-            {
-                GameBoard.CreateNewFigure(1, b, Colors.WHITE, Figures.PAWN);
-                GameBoard.CreateNewFigure(6, b, Colors.BLACK, Figures.PAWN);
-            }
-            GameBoard.CreateNewFigure(0, 0, Colors.WHITE, Figures.ROOK);
-            GameBoard.CreateNewFigure(0, 1, Colors.WHITE, Figures.KNIGHT);
-            GameBoard.CreateNewFigure(0, 2, Colors.WHITE, Figures.BISHOP);
-            GameBoard.CreateNewFigure(0, 3, Colors.WHITE, Figures.KING);
-            GameBoard.CreateNewFigure(0, 4, Colors.WHITE, Figures.QUEEN);
-            GameBoard.CreateNewFigure(0, 5, Colors.WHITE, Figures.BISHOP);
-            GameBoard.CreateNewFigure(0, 6, Colors.WHITE, Figures.KNIGHT);
-            GameBoard.CreateNewFigure(0, 7, Colors.WHITE, Figures.ROOK);
-            GameBoard.CreateNewFigure(7, 0, Colors.BLACK, Figures.ROOK);
-            GameBoard.CreateNewFigure(7, 1, Colors.BLACK, Figures.KNIGHT);
-            GameBoard.CreateNewFigure(7, 2, Colors.BLACK, Figures.BISHOP);
-            GameBoard.CreateNewFigure(7, 3, Colors.BLACK, Figures.KING);
-            GameBoard.CreateNewFigure(7, 4, Colors.BLACK, Figures.QUEEN);
-            GameBoard.CreateNewFigure(7, 5, Colors.BLACK, Figures.BISHOP);
-            GameBoard.CreateNewFigure(7, 6, Colors.BLACK, Figures.KNIGHT);
-            GameBoard.CreateNewFigure(7, 7, Colors.BLACK, Figures.ROOK);
+            Board GameBoard = Board.CreateChessBoard();
             GameBoard.MoveFig(GameBoard.GetFigure(1, 1), 3, 1);
             GameBoard.MoveFig(GameBoard.GetFigure(6, 5), 4, 5);
             GameBoard.MoveFig(GameBoard.GetFigure(3, 1), 4, 1);

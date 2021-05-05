@@ -53,11 +53,11 @@ namespace chess
                 {
                     if (this.GetColor() == Colors.BLACK)
                     {
-                        board.SetFigure(y + 1, x, null);
+                        board.RemoveFigure(board.GetFigure(y + 1, x));
                     }
                     else
                     {
-                        board.SetFigure(y - 1, x, null);
+                        board.RemoveFigure(board.GetFigure(y - 1, x));
                     }
                 }
                 else IsAfterFirstStep = false;
@@ -81,15 +81,16 @@ namespace chess
                 {
                     if (this.GetColor() == Colors.BLACK)
                     {
-                        board.SetFigure(y + 1, x, null);
+                        board.RemoveFigure(board.GetFigure(y + 1, x));
                     }
                     else
                     {
-                        board.SetFigure(y - 1, x, null);
+                        board.RemoveFigure(board.GetFigure(y + 1, x));
                     }
                 }
                 else IsAfterFirstStep = false;
                 IsFirstStep = false;
+                board.RemoveFigure(this);
                 board.Move(board.CreateNewFigure(this.y, this.x, this.color, figure_type), y, x);
                 return true;
             }

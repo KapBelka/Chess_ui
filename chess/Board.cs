@@ -6,11 +6,12 @@ namespace chess
 {
     public class Board
     {
-        private Figure[,] field = new Figure[8,8];
+        private List<Figure> black_figures = new List<Figure>();
+        private List<Figure> white_figures = new List<Figure>();
         private Colors Step = Colors.WHITE;
         private int count_steps = 1;
-        public Figure white_king;
-        public Figure black_king;
+        private Figure white_king;
+        private Figure black_king;
         private void ChangeColor()
         {
             if (Step == Colors.WHITE) Step = Colors.BLACK;
@@ -22,13 +23,6 @@ namespace chess
         }
         public Board()
         {
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    field[i, j] = null;
-                }
-            }
         }
         public static Board CreateChessBoard()
         {
@@ -58,17 +52,25 @@ namespace chess
         }
         public void GetFieldData(ref string[,] array)
         {
-            for (int i = 0; i < 8; i++)
+            foreach (Figure figure in white_figures)
             {
-                for (int j = 0; j < 8; j++)
-                {
-                    array[i, j] = this.field[i, j]?.GetSymbol();
-                }
+                array[figure.GetY(), figure.GetX()] = figure.GetSymbol();
+            }
+            foreach (Figure figure in black_figures)
+            {
+                array[figure.GetY(), figure.GetX()] = figure.GetSymbol();
             }
         }
-        public Figure GetFigure(int a, int b)
+        public Figure GetFigure(int y, int x)
         {
-            if (0 <= a && a < 8 && 0 <= b && b < 8) return field[a, b];
+            foreach (Figure figure in white_figures)
+            {
+                if (y == figure.GetY() && x == figure.GetX()) return figure;
+            }
+            foreach (Figure figure in black_figures)
+            {
+                if (y == figure.GetY() && x == figure.GetX()) return figure;
+            }
             return null;
         }
         public int GetCountSteps()
@@ -106,43 +108,61 @@ namespace chess
                 default:
                     return null;
             }
-            this.SetFigure(y, x, figure);
+            this.AddFigure(figure);
             return figure;
         }
-        public void SetFigure(int y, int x, Figure fig)
+        public void AddFigure(Figure figure)
         {
-            this.field[y, x] = fig;
+            if (figure != null)
+            {
+                if (figure.GetColor() == Colors.BLACK) this.black_figures.Add(figure);
+                else this.white_figures.Add(figure);
+            }
+        }
+        public void RemoveFigure(Figure figure)
+        {
+            if (figure != null)
+            {
+                if (figure.GetColor() == Colors.BLACK) this.black_figures.Remove(figure);
+                else this.white_figures.Remove(figure);
+            }
         }
         public bool IsCheck(Figure fig, int y, int x)
         {
-            Console.WriteLine(fig);
-            Figure temp = this.field[y, x];
-            this.field[y, x] = fig;
-            this.field[fig.GetY(), fig.GetX()] = null;
+            Figure temp = GetFigure(y, x);
             int tempy = fig.GetY();
             int tempx = fig.GetX();
-            fig.SetPos(y, x);
-            if (fig.GetColor() == Colors.BLACK && IsUnderAttack(this.black_king.GetY(), this.black_king.GetX(), fig.GetColor()) || (fig.GetColor() == Colors.WHITE && IsUnderAttack(this.white_king.GetY(), this.white_king.GetX(), fig.GetColor())))
+            Move(fig, y, x);
+            if (fig.GetColor() == Colors.BLACK && IsUnderAttack(this.black_king.GetY(), this.black_king.GetX(), Colors.BLACK) || (fig.GetColor() == Colors.WHITE && IsUnderAttack(this.white_king.GetY(), this.white_king.GetX(), Colors.WHITE)))
             {
-                fig.SetPos(tempy, tempx);
-                this.field[fig.GetY(), fig.GetX()] = fig;
-                this.field[y, x] = temp;
+                Console.WriteLine(IsUnderAttack(this.white_king.GetY(), this.white_king.GetX(), Colors.WHITE));
+                Move(fig, tempy, tempx);
+                AddFigure(temp);
                 return true;
             }
-            fig.SetPos(tempy, tempx);
-            this.field[fig.GetY(), fig.GetX()] = fig;
-            this.field[y, x] = temp;
+            Move(fig, tempy, tempx);
+            AddFigure(temp);
             return false;
         }
         public bool IsUnderAttack(int y, int x, Colors color)
         {
-            for (int i = 0; i < 8; i++)
+            if (color == Colors.BLACK)
             {
-                for (int j = 0; j < 8; j++)
+                foreach (Figure figure in white_figures)
                 {
-                    Figure figure = this.GetFigure(i, j);
-                    if (figure != null && figure.GetColor() != color && figure.IsCanMove(y, x) != 0)
+                    if (figure.IsCanMove(y, x) > 0)
                     {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (Figure figure in black_figures)
+                {
+                    if (figure.IsCanMove(y, x) > 0)
+                    {
+                        Console.WriteLine(figure.GetColor());
                         return true;
                     }
                 }
@@ -151,9 +171,11 @@ namespace chess
         }
         public void Move(Figure fig, int y, int x)
         {
-            SetFigure(y, x, fig);
-            SetFigure(fig.GetY(), fig.GetX(), null);
-            fig.SetPos(y, x);
+            if (fig != null)
+            {
+                RemoveFigure(GetFigure(y, x));
+                fig.SetPos(y, x);
+            }
         }
         public int MoveFig(Figure fig, int y, int x)
         {
