@@ -9,6 +9,7 @@ namespace chess
         public Knight(int y, int x, Colors color, Board board) : base(y, x, color, board)
         {
         }
+
         public override string GetSymbol()
         {
             if (this.color == Colors.BLACK) return "bN";
@@ -22,15 +23,18 @@ namespace chess
             return 0;
         }
 
-        public override bool Move(int y, int x)
+        public override int Move(int y, int x)
         {
+            if (board.IsCheck(this, y, x)) return 0;
+            if (GetColor() != board.GetColor()) return -2;
             int CanMove = this.IsCanMove(y, x);
             if (CanMove != 0)
             {
                 board.Move(this, y, x);
-                return true;
+                board.EndMove();
+                return 1;
             }
-            return false;
+            return 0;
         }
     }
 }

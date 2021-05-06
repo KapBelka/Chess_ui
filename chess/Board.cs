@@ -135,13 +135,16 @@ namespace chess
             Move(fig, y, x);
             if (fig.GetColor() == Colors.BLACK && IsUnderAttack(this.black_king.GetY(), this.black_king.GetX(), Colors.BLACK) || (fig.GetColor() == Colors.WHITE && IsUnderAttack(this.white_king.GetY(), this.white_king.GetX(), Colors.WHITE)))
             {
-                Console.WriteLine(IsUnderAttack(this.white_king.GetY(), this.white_king.GetX(), Colors.WHITE));
                 Move(fig, tempy, tempx);
                 AddFigure(temp);
                 return true;
             }
             Move(fig, tempy, tempx);
             AddFigure(temp);
+            return false;
+        }
+        public bool IsCheckMate()
+        {
             return false;
         }
         public bool IsUnderAttack(int y, int x, Colors color)
@@ -177,31 +180,10 @@ namespace chess
                 fig.SetPos(y, x);
             }
         }
-        public int MoveFig(Figure fig, int y, int x)
+        public void EndMove()
         {
-            if (fig == null || IsCheck(fig, y, x)) return 0;
-            if (fig.GetType() == typeof(Pawn) && fig.IsCanMove(y, x) != 0 && ((fig.GetColor() == Colors.BLACK && y == 0) || (fig.GetColor() == Colors.WHITE && y == 7))) return -1;
-            if (fig.GetColor() != Step) return -2;
-            if (fig.Move(y, x))
-            {
-                count_steps++;
-                ChangeColor();
-                return 1;
-            }
-            return 0;
-        }
-        public int MoveFig(Figure fig, int y, int x, Figures type_figure)
-        {
-            if (fig == null) return 0;
-            if (fig.GetType() != typeof(Pawn) || (fig.GetColor() == Colors.WHITE && y != 7) || (fig.GetColor() == Colors.BLACK && y != 0)) return -1;
-            if (fig.GetColor() != Step) return -2;
-            if (((Pawn)fig).Move(y, x, type_figure))
-            {
-                count_steps++;
-                ChangeColor();
-                return 1;
-            }
-            return 0;
+            count_steps++;
+            ChangeColor();
         }
     }
 }

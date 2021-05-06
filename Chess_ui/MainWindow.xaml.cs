@@ -61,7 +61,7 @@ namespace Chess_ui
             }
             else if (tempbtn != null)
             {
-                int step_result = GameBoard.MoveFig(GameBoard.GetFigure(Grid.GetRow(tempbtn), Grid.GetColumn(tempbtn)), Grid.GetRow((Button)sender), Grid.GetColumn((Button)sender));
+                int step_result = GameBoard.GetFigure(Grid.GetRow(tempbtn), Grid.GetColumn(tempbtn)).Move(Grid.GetRow((Button)sender), Grid.GetColumn((Button)sender));
                 if (step_result == 1)
                 {
                     update_data();
@@ -129,7 +129,7 @@ namespace Chess_ui
         }
         private void transform_to_queen(object sender, RoutedEventArgs e)
         {
-            int step_result = GameBoard.MoveFig(GameBoard.GetFigure(Grid.GetRow(tempbtn), Grid.GetColumn(tempbtn)), Grid.GetRow(tempbtn2), Grid.GetColumn(tempbtn2), Figures.QUEEN);
+            int step_result = (GameBoard.GetFigure(Grid.GetRow(tempbtn), Grid.GetColumn(tempbtn)) as Pawn).Move(Grid.GetRow(tempbtn2), Grid.GetColumn(tempbtn2), Figures.QUEEN);
             if (step_result == 1)
             {
                 mypopup.IsOpen = false;
@@ -138,7 +138,7 @@ namespace Chess_ui
         }
         private void transform_to_knight(object sender, RoutedEventArgs e)
         {
-            int step_result = GameBoard.MoveFig(GameBoard.GetFigure(Grid.GetRow(tempbtn), Grid.GetColumn(tempbtn)), Grid.GetRow(tempbtn2), Grid.GetColumn(tempbtn2), Figures.KNIGHT);
+            int step_result = (GameBoard.GetFigure(Grid.GetRow(tempbtn), Grid.GetColumn(tempbtn)) as Pawn).Move(Grid.GetRow(tempbtn2), Grid.GetColumn(tempbtn2), Figures.KNIGHT);
             if (step_result == 1)
             {
                 mypopup.IsOpen = false;
@@ -147,7 +147,7 @@ namespace Chess_ui
         }
         private void transform_to_bishop(object sender, RoutedEventArgs e)
         {
-            int step_result = GameBoard.MoveFig(GameBoard.GetFigure(Grid.GetRow(tempbtn), Grid.GetColumn(tempbtn)), Grid.GetRow(tempbtn2), Grid.GetColumn(tempbtn2), Figures.BISHOP);
+            int step_result = (GameBoard.GetFigure(Grid.GetRow(tempbtn), Grid.GetColumn(tempbtn)) as Pawn).Move(Grid.GetRow(tempbtn2), Grid.GetColumn(tempbtn2), Figures.BISHOP);
             if (step_result == 1)
             {
                 mypopup.IsOpen = false;
@@ -156,7 +156,7 @@ namespace Chess_ui
         }
         private void transform_to_rook(object sender, RoutedEventArgs e)
         {
-            int step_result = GameBoard.MoveFig(GameBoard.GetFigure(Grid.GetRow(tempbtn), Grid.GetColumn(tempbtn)), Grid.GetRow(tempbtn2), Grid.GetColumn(tempbtn2), Figures.ROOK);
+            int step_result = (GameBoard.GetFigure(Grid.GetRow(tempbtn), Grid.GetColumn(tempbtn)) as Pawn).Move(Grid.GetRow(tempbtn2), Grid.GetColumn(tempbtn2), Figures.ROOK);
             if (step_result == 1)
             {
                 mypopup.IsOpen = false;

@@ -92,10 +92,10 @@ namespace Chess.Tests
             Figure pawn = board.CreateNewFigure(y-2, x, Colors.WHITE, Figures.PAWN);
             Figure enemy1 = board.CreateNewFigure(y + 2, x - 1, Colors.BLACK, Figures.PAWN);
             Figure enemy2 = board.CreateNewFigure(y + 2, x + 1, Colors.BLACK, Figures.PAWN);
-            board.MoveFig(pawn, y-1, x);
-            board.MoveFig(enemy1, y, x - 1);
-            board.MoveFig(pawn, y, x);
-            board.MoveFig(enemy2, y, x + 1);
+            pawn.Move(y -1, x);
+            enemy1.Move(y, x - 1);
+            pawn.Move(y, x);
+            enemy2.Move(y, x + 1);
 
             List<int> result = new List<int>();
 
@@ -116,8 +116,8 @@ namespace Chess.Tests
             Figure pawn = board.CreateNewFigure(y, x, Colors.WHITE, Figures.PAWN);
             List<int> result = new List<int>();
             result.Add(pawn.IsCanMove(7, 3));
-            result.Add(board.MoveFig(pawn, 7, 3));
-            result.Add(board.MoveFig(pawn, 7, 3, Figures.QUEEN));
+            result.Add(pawn.Move(7, 3));
+            result.Add((pawn as Pawn).Move(7, 3, Figures.QUEEN));
             result.Add(board.GetFigure(7, 3).GetType() == typeof(Queen) ? 1 : 0);
 
             List<int> answer = new List<int> { 1, -1, 1, 1};

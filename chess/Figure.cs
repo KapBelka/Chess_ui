@@ -58,6 +58,6 @@ namespace chess
             return true;
         }
         public abstract int IsCanMove(int y, int x);
-        public abstract bool Move(int y, int x);
+        public abstract int Move(int y, int x);
     }
 }

@@ -39,11 +39,14 @@ namespace chess
             }
             return 0;
         }
-        public override bool Move(int y, int x)
+        public override int Move(int y, int x)
         {
+            if (board.IsCheck(this, y, x)) return 0;
+            if (GetColor() != board.GetColor()) return -2;
             int CanMove = this.IsCanMove(y, x);
             if (CanMove != 0)
             {
+                if ((GetColor() == Colors.BLACK && y == 0) || (GetColor() == Colors.WHITE && y == 7)) return -1;
                 if (CanMove == 2)
                 {
                     IsAfterFirstStep = true;
@@ -63,38 +66,25 @@ namespace chess
                 else IsAfterFirstStep = false;
                 IsFirstStep = false;
                 board.Move(this, y, x);
-                return true;
+                board.EndMove();
+                return 1;
             }
-            return false;
+            return 0;
         }
-        public bool Move(int y, int x, Figures figure_type)
+        public int Move(int y, int x, Figures figure_type)
         {
+            if (board.IsCheck(this, y, x)) return 0;
+            if (GetColor() != board.GetColor()) return -2;
             int CanMove = this.IsCanMove(y, x);
             if (CanMove != 0)
             {
-                if (CanMove == 2)
-                {
-                    IsAfterFirstStep = true;
-                    FirstStep = board.GetCountSteps();
-                }
-                else if (CanMove == 4)
-                {
-                    if (this.GetColor() == Colors.BLACK)
-                    {
-                        board.RemoveFigure(board.GetFigure(y + 1, x));
-                    }
-                    else
-                    {
-                        board.RemoveFigure(board.GetFigure(y + 1, x));
-                    }
-                }
-                else IsAfterFirstStep = false;
-                IsFirstStep = false;
+                if ((GetColor() == Colors.BLACK && y != 0) || (GetColor() == Colors.WHITE && y != 7)) return -1;
                 board.RemoveFigure(this);
                 board.Move(board.CreateNewFigure(this.y, this.x, this.color, figure_type), y, x);
-                return true;
+                board.EndMove();
+                return 1;
             }
-            return false;
+            return 0;
         }
     }
 }

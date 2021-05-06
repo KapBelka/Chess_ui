@@ -10,6 +10,7 @@ namespace chess
         public King(int y, int x, Colors color, Board board) : base(y, x, color, board)
         {
         }
+
         public override string GetSymbol()
         {
             if (this.color == Colors.BLACK) return "bK";
@@ -46,7 +47,7 @@ namespace chess
                     {
                         for (int i = 1; i <= 3; i++)
                         {
-                            if (board.GetFigure(y, this.y + i) != null) return 0;
+                            if (board.GetFigure(y, this.x + i) != null) return 0;
                         }
                         return 3;
                     }
@@ -55,24 +56,27 @@ namespace chess
             return 0;
         }
 
-        public override bool Move(int y, int x)
+        public override int Move(int y, int x)
         {
+            if (board.IsCheck(this, y, x)) return 0;
+            if (GetColor() != board.GetColor()) return -2;
             int CanMove = this.IsCanMove(y, x);
             if (CanMove != 0)
             {
                 if (CanMove == 2)
                 {
-                    board.Move(board.GetFigure(y, 0), y, 2);
+                    board.GetFigure(y, 0).SetPos(y, 2);
                 }
                 else if (CanMove == 3)
                 {
-                    board.Move(board.GetFigure(y, 7), y, 4);
+                    board.GetFigure(y, 7).SetPos(y, 4);
                 }
                 this.IsFirstStep = false;
                 board.Move(this, y, x);
-                return true;
+                board.EndMove();
+                return 1;
             }
-            return false;
+            return 0;
         }
     }
 }

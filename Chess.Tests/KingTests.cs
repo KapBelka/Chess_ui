@@ -64,8 +64,8 @@ namespace Chess.Tests
 
             List<int> result = new List<int>();
 
-            result.Add(board.MoveFig(king, y + 1, x));
-            result.Add(board.MoveFig(king, y - 1, x));
+            result.Add(king.Move(y + 1, x));
+            result.Add(king.Move(y - 1, x));
 
             List<int> answer = new List<int> { 0, 0 };
             Assert.Equal<int>(result, answer);
@@ -88,10 +88,10 @@ namespace Chess.Tests
 
             List<int> result = new List<int>();
 
-            result.Add(board.MoveFig(king, y, x + 2));
-            result.Add(board.MoveFig(king, y, x - 2));
-            result.Add(board.MoveFig(king2, 7, 1));
-            result.Add(board.MoveFig(king2, 7, 5));
+            result.Add(king.Move(y, x + 2));
+            result.Add(king.Move(y, x - 2));
+            result.Add(king2.Move(7, 1));
+            result.Add(king2.Move(7, 5));
 
             List<int> answer = new List<int> { 0, 1, 0, 0 };
             Assert.Equal<int>(result, answer);
