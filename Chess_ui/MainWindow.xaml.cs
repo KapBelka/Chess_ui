@@ -119,6 +119,7 @@ namespace Chess_ui
                     grid.Children.Add(mypopup);
                     mypopup.IsOpen = true;
                 }
+                if (GameBoard.IsCheckMate()) MessageBox.Show("CheckMate!");
             }
         }
         private void popup_closed(object sender, System.EventArgs e)

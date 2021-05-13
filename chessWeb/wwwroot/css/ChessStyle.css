@@ -1,0 +1,39 @@
+﻿.boardcell_white {
+    background-color: #5F9EA0;
+    max-width: 80px;
+    padding: 0;
+    margin: 0;
+    border: 2px solid #5F9EA0;
+}
+img {
+}
+.boardcell_black {
+    background-color: #E0FFFF;
+    max-width: 80px;
+    padding: 0;
+    margin: 0;
+    border: 2px solid #E0FFFF;
+}
+.cell {
+    max-width: 80px;
+    padding: 0;
+    margin: 0;
+    border: 2px solid white;
+}
+#transMenu {
+    position: absolute;
+    visibility: hidden;
+}
+.picked {
+    border: 2px solid red;
+}
+.board {
+    border: 5px solid blue;
+    width: 650px;
+    height: 650px;
+}
+.boardrow {
+    width: 640px;
+    height: 80px;
+    background-color: lightgray;
+}

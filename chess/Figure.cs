@@ -6,13 +6,13 @@ namespace chess
 {
     public enum Figures
     {
-        NULL,
-        PAWN,
+        NONE,
         ROOK,
         QUEEN,
         KNIGHT,
         BISHOP,
-        KING
+        KING,
+        PAWN,
     }
     public enum Colors
     {

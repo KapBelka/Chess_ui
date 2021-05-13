@@ -1,0 +1,16 @@
+﻿<h2>Ожидайте...</h2>
+
+@section Scripts{
+    <script>
+        var xhr = new XMLHttpRequest();
+        function f() {
+            xhr.open('GET', 'https://localhost:5001/api/game/getevent', false);
+            xhr.withCredentials = true;
+            xhr.send();
+            if (xhr.responseText > 0) {
+                window.location.href = "https://localhost:5001/game/play?game_id=" + xhr.responseText;
+            }
+        };
+        setInterval(f, 1000);
+    </script>
+}

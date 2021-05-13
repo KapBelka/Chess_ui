@@ -1,0 +1,123 @@
+﻿<div id="transMenu">
+    <ul id="transMenuList" class="list-inline">
+    </ul>
+</div>
+<div class="container board">
+    @for (int i = 0; i < 8; i++)
+    {
+        <div class="row boardrow">
+            @for (int j = 0; j < 8; j++)
+            {
+                @if (((7 * i + j) % 2) == 1)
+                {
+                    <div class="col boardcell_white" id="cell_@(i)_@(j)" onclick="cellclicked(@i, @j)"></div>
+                }
+                else
+                {
+                    <div class="col boardcell_black" id="cell_@(i)_@(j)" onclick="cellclicked(@i, @j)"></div>
+                }
+            }
+        </div>
+    }
+</div>
+
+
+@section endScripts{
+    <script>
+        let params = (new URL(document.location)).searchParams;
+        var game_id = params.get("game_id");
+        update_board();
+        var mouse_x;
+        var mouse_y;
+        var temp_y = null;
+        var temp_x = null;
+        function cellclicked(y, x) {
+            var element = document.getElementById("transMenu");
+            element.style.visibility = "hidden";
+            if (temp_y === null) {
+                temp_y = y;
+                temp_x = x;
+                var element = document.getElementById("cell_" + y + "_" + x);
+                element.classList.add("picked")
+            }
+            else if (temp_y === y && temp_x === x) {
+                temp_y = null;
+                temp_x = null;
+                var element = document.getElementById("cell_" + y + "_" + x);
+                element.classList.remove("picked")
+            }
+            else {
+                domove(y, x);
+            }
+        };
+        function domove(y, x, figure = 0) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://localhost:5001/api/game/domove?game_id=' + game_id + '&y_from=' + temp_y + '&x_from=' + temp_x + '&y_to=' + y + '&x_to=' + x + '&figure_type=' + figure, false);
+            xhr.withCredentials = true;
+            xhr.send();
+            if (xhr.responseText == "-1") {
+                var element = document.getElementById("transMenuList");
+                element.innerHTML = '<li onclick="domove(' + y + ',' + x + ',1)" class="list-inline-item cell"><img width="76" height="76" src="../static/img/bR.png"></li><li onclick="domove(' + y + ',' + x + ',2)" class="list-inline-item cell" ><img width="76" height="76" src="../static/img/bQ.png"></li><li onclick="domove(' + y + ',' + x + ',3)" class="list-inline-item cell"><img width="76" height="76" src="../static/img/bN.png"></li><li onclick="domove(' + y + ',' + x +',4)" class="list-inline-item cell"><img width="76" height="76" src="../static/img/bB.png"></li>'
+                moveDiv(mouse_x, mouse_y);
+            }
+            else {
+                var element = document.getElementById("cell_" + temp_y + "_" + temp_x);
+                element.classList.remove("picked")
+                temp_y = null;
+                temp_x = null;
+                update_board();
+                var element = document.getElementById("transMenu");
+                element.style.visibility = "hidden";
+            }
+        }
+        function update_board() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://localhost:5001/api/game/getgamedata?game_id='+game_id, false);
+            xhr.withCredentials = true;
+            xhr.send();
+            clear_board();
+            var jsonResponse = JSON.parse(xhr.responseText);
+            for (var i = 0; i < jsonResponse.length; i++) {
+                var data = jsonResponse[i];
+                var element = document.getElementById("cell_" + data["y"] + "_" + data["x"]);
+                element.innerHTML = '<img width="76" height="76" src="../static/img/' + data["figure"] + '.png">';
+            }
+        }
+        function clear_board() {
+            for (var i = 0; i < 8; i++) {
+                for (var j = 0; j < 8; j++) {
+                    var element = document.getElementById("cell_" + i + "_" + j);
+                    element.innerHTML = '';
+                }
+            }
+        }
+        function f() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://localhost:5001/api/game/getevent', false);
+            xhr.withCredentials = true;
+            xhr.send();
+            if (xhr.responseText == -1) {
+                update_board()
+            }
+            else if (xhr.responseText == -2) {
+                window.location.href = "https://localhost:5001/game/end?game_id=" + game_id;
+            }
+        };
+        setInterval(f, 1000);
+        (function () {
+            window.onmousedown = handleMouseMove;
+            function handleMouseMove(event) {
+                event = event || window.event;
+                mouse_x = event.clientX;
+                mouse_y = event.clientY;
+            }
+        })();
+
+        function moveDiv(x_pos, y_pos) {
+            var d = document.getElementById('transMenu');
+            d.style.visibility = "visible";
+            d.style.left = x_pos + "px";
+            d.style.top = y_pos + "px";
+        }
+    </script>
+}

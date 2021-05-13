@@ -4,6 +4,11 @@ using System.Text;
 
 namespace chess
 {
+    public class JsonModel {
+        public string figure { get; set; }
+        public int y { get; set; }
+        public int x { get; set; }
+    }
     public class Board
     {
         private List<Figure> black_figures = new List<Figure>();
@@ -50,15 +55,15 @@ namespace chess
             GameBoard.CreateNewFigure(7, 7, Colors.BLACK, Figures.ROOK);
             return GameBoard;
         }
-        public void GetFieldData(ref string[,] array)
+        public void GetFieldData(ref List<JsonModel> array)
         {
             foreach (Figure figure in white_figures)
             {
-                array[figure.GetY(), figure.GetX()] = figure.GetSymbol();
+                array.Add(new JsonModel(){ y = figure.GetY(), x = figure.GetX(), figure = figure.GetSymbol() });
             }
             foreach (Figure figure in black_figures)
             {
-                array[figure.GetY(), figure.GetX()] = figure.GetSymbol();
+                array.Add(new JsonModel() { y = figure.GetY(), x = figure.GetX(), figure = figure.GetSymbol() });
             }
         }
         public Figure GetFigure(int y, int x)
@@ -133,7 +138,7 @@ namespace chess
             int tempy = fig.GetY();
             int tempx = fig.GetX();
             Move(fig, y, x);
-            if (fig.GetColor() == Colors.BLACK && IsUnderAttack(this.black_king.GetY(), this.black_king.GetX(), Colors.BLACK) || (fig.GetColor() == Colors.WHITE && IsUnderAttack(this.white_king.GetY(), this.white_king.GetX(), Colors.WHITE)))
+            if (fig.GetColor() == Colors.BLACK && IsUnderAttack(this.black_king.GetY(), this.black_king.GetX(), Colors.BLACK) > 0 || (fig.GetColor() == Colors.WHITE && IsUnderAttack(this.white_king.GetY(), this.white_king.GetX(), Colors.WHITE) > 0))
             {
                 Move(fig, tempy, tempx);
                 AddFigure(temp);
@@ -145,17 +150,83 @@ namespace chess
         }
         public bool IsCheckMate()
         {
-            return false;
+            List<Figure> attack_figures = new List<Figure>();
+            int count_attack;
+            Figure king;
+            if (Step == Colors.BLACK)
+            {
+                count_attack = IsUnderAttack(this.black_king.GetY(), this.black_king.GetX(), Colors.BLACK, attack_figures);
+                king = black_king;
+            }
+            else
+            {
+                count_attack = IsUnderAttack(this.white_king.GetY(), this.white_king.GetX(), Colors.WHITE, attack_figures);
+                king = white_king;
+            }
+            if (count_attack == 0) return false;
+            else if (count_attack == 1 && attack_figures[0].GetType() != typeof(Knight))
+            {
+                Figure figure = attack_figures[0];
+                if (figure.GetY() == king.GetY())
+                {
+                    int start_i = Math.Min(figure.GetX(), king.GetX());
+                    int end_i = Math.Max(figure.GetX(), king.GetX());
+                    for (int i = start_i; i < end_i; i++)
+                    {
+                        if (king.GetColor() == Colors.BLACK)
+                        {
+                            if (IsUnderAttack(king.GetY(), i, Colors.WHITE) > 0) return false;
+                        }
+                        else if (IsUnderAttack(king.GetY(), i, Colors.BLACK) > 0) return false;
+                    }
+                }
+                else if (figure.GetX() == king.GetX())
+                {
+                    int start_i = Math.Min(figure.GetY(), king.GetY());
+                    int end_i = Math.Max(figure.GetY(), king.GetY());
+                    for (int i = start_i; i < end_i; i++)
+                    {
+                        if (king.GetColor() == Colors.BLACK)
+                        {
+                            if (IsUnderAttack(i, king.GetX(), Colors.WHITE) > 0) return false;
+                        }
+                        else if (IsUnderAttack(i, king.GetX(), Colors.BLACK) > 0) return false;
+                    }
+                }
+                else
+                {
+                    int razn_x = king.GetX() - figure.GetX();
+                    int razn_y = king.GetY() - figure.GetY();
+                    for (int i = 1; i < Math.Abs(razn_x); i++)
+                    {
+                        if (king.GetColor() == Colors.BLACK)
+                        {
+                            if (IsUnderAttack(king.GetY() - i * (razn_y / Math.Abs(razn_y)), king.GetX() - i * (razn_x / Math.Abs(razn_x)), Colors.WHITE) > 0) return false;
+                        }
+                        else if (IsUnderAttack(king.GetY() - i * (razn_y / Math.Abs(razn_y)), king.GetX() - i * (razn_x / Math.Abs(razn_x)), Colors.BLACK) > 0) return false;
+                    }
+                }
+            }
+            for (int i = -1; i < 2; i++)
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    if (king.IsCanMove(king.GetY() + i, king.GetX() + j) > 0 && !IsCheck(king, king.GetY() + i, king.GetX() + j)) return false;
+                }
+            }
+            return true;
         }
-        public bool IsUnderAttack(int y, int x, Colors color)
+        public int IsUnderAttack(int y, int x, Colors color, List<Figure> who_attack=null)
         {
+            int count_attack = 0;
             if (color == Colors.BLACK)
             {
                 foreach (Figure figure in white_figures)
                 {
                     if (figure.IsCanMove(y, x) > 0)
                     {
-                        return true;
+                        who_attack?.Add(figure);
+                        count_attack++;
                     }
                 }
             }
@@ -165,12 +236,12 @@ namespace chess
                 {
                     if (figure.IsCanMove(y, x) > 0)
                     {
-                        Console.WriteLine(figure.GetColor());
-                        return true;
+                        who_attack?.Add(figure);
+                        count_attack++;
                     }
                 }
             }
-            return false;
+            return count_attack;
         }
         public void Move(Figure fig, int y, int x)
         {
